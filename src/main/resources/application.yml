@@ -9,3 +9,9 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/abhi
           jwk-set-uri: http://localhost:8080/realms/abhi/protocol/openid-connect/certs
+
+jwt:
+  auth:
+    converter:
+      resource-id: demo-rest-api
+      principle-attribute: preferred_username

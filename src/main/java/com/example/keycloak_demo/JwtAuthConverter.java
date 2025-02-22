@@ -1,5 +1,6 @@
 package com.example.keycloak_demo;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -23,7 +24,11 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
   private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
       new JwtGrantedAuthoritiesConverter();
 
-  private final String principleAttribute = "preferred_username";
+  @Value("${jwt.auth.converter.principle-attribute}")
+  private String principleAttribute;
+
+  @Value("${jwt.auth.converter.resource-id}")
+  private String resourceId;
 
   @Override
   public AbstractAuthenticationToken convert(@NonNull Jwt source) {
@@ -44,11 +49,11 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
       return Set.of();
     }
     resourceAccess = source.getClaim("resource_access");
-    if (null == resourceAccess.get("demo-rest-api")) {
+    if (null == resourceAccess.get(resourceId)) {
       return Set.of();
     }
 
-    resource = (Map<String, Object>) resourceAccess.get("demo-rest-api");
+    resource = (Map<String, Object>) resourceAccess.get(resourceId);
     resourceRoles = (Collection<String>) resource.get("roles");
     return resourceRoles.stream()
         .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
