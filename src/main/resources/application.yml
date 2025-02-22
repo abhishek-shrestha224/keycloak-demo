@@ -1,0 +1,11 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: keycloak-demo
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/abhi
+          jwk-set-uri: http://localhost:8080/realms/abhi/protocol/openid-connect/certs
